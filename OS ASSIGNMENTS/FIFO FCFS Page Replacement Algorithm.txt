@@ -1,0 +1,70 @@
+#include <stdio.h>
+
+void FIFO(char[], char[], int, int);
+
+int main() {
+    int i, l, f;
+    char F[10], s[25];
+
+    printf("\n\n\tEnter the number of empty frames: ");
+    scanf("%d", &f);
+    printf("\n\n\tEnter the length of the page reference string: ");
+    scanf("%d", &l);
+    printf("\n\n\tEnter the page reference string: ");
+    scanf("%s", s);
+
+    // Initialize frames to -1 (empty)
+    for (i = 0; i < f; i++)
+        F[i] = -1;
+
+    // Call FIFO page replacement algorithm
+    FIFO(s, F, l, f);
+
+    return 0;
+}
+
+// FIFO Page Replacement Algorithm
+void FIFO(char s[], char F[], int l, int f) {
+    int i, j = 0, k, flag, cnt = 0;
+
+    printf("\n\tPAGE\t    FRAMES\t  FAULTS\n");
+
+    for (i = 0; i < l; i++) {
+        flag = 0;
+
+        // Check if page is already in frames
+        for (k = 0; k < f; k++) {
+            if (F[k] == s[i]) {
+                flag = 1;
+                break;
+            }
+        }
+
+        // Page fault occurs if page is not in frames
+        if (flag == 0) {
+            printf("\n\t%c\t", s[i]);
+            F[j] = s[i];  // Replace page in FIFO order
+            j = (j + 1) % f;  // Update frame index in round-robin fashion
+
+            // Display current frames
+            for (k = 0; k < f; k++) {
+                if (F[k] != -1)
+                    printf("   %c", F[k]);
+                else
+                    printf("   -");
+            }
+            printf("\tPage-fault %d", ++cnt);
+        } else {
+            // No page fault
+            printf("\n\t%c\t", s[i]);
+            for (k = 0; k < f; k++) {
+                if (F[k] != -1)
+                    printf("   %c", F[k]);
+                else
+                    printf("   -");
+            }
+            printf("\tNo page-fault");
+        }
+    }
+    printf("\n\nTotal Page Faults: %d\n", cnt);
+}
